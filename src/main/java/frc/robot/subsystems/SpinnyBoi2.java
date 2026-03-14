@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.RPM;
-
 // import com.revrobotics.spark.SparkMax;
 // import com.revrobotics.spark.SparkLowLevel.MotorType;
 // import com.revrobotics.spark.config.SparkMaxConfig;
@@ -51,7 +49,7 @@ public class SpinnyBoi2 extends SubsystemBase {
         feederConfig.Voltage.PeakForwardVoltage = 12;
         feederConfig.Voltage.PeakReverseVoltage = -12;
         feederConfig.CurrentLimits.StatorCurrentLimit = 70.0;
-        shooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        feederConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         feederConfig.CurrentLimits.SupplyCurrentLimit = 40.0;
         feederConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         feederConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
