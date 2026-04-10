@@ -29,13 +29,13 @@ public final class Constants {
             // and setInverted(boolean).
             if (rightMotor != null) {
                 rightMotor.setMaxCurrent(CurrentType.STATOR, 60);
-                rightMotor.setBrakeMode(true);
+                rightMotor.setBrakeMode(false);
                 rightMotor.setInverted(false);
             }
 
             if (leftMotor != null) {
                 leftMotor.setMaxCurrent(CurrentType.STATOR, 60);
-                leftMotor.setBrakeMode(true);
+                leftMotor.setBrakeMode(false);
                 leftMotor.setInverted(false);
             }
         }

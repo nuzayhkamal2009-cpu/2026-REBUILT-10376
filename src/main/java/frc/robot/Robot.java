@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.SpinnyBoi2;
 
@@ -37,6 +38,7 @@ public class Robot extends TimedRobot {
   //private final SpinnyBoi2 m_FalconShooter = new SpinnyBoi2();
 
   private final XboxController m_driver = new XboxController(0);
+  private final XboxController m_drivertwo = new XboxController(1);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -46,7 +48,6 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-
     m_robotContainer = new RobotContainer();
   }
 
@@ -80,7 +81,8 @@ public class Robot extends TimedRobot {
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // Ask RobotContainer for the command corresponding to the selected auto.
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand(m_autoSelected);
 
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -94,31 +96,24 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     // If an autonomous command is running (from RobotContainer), prefer that.
-    if (m_autonomousCommand != null) {
-      return;
-    }
+    // if (m_autonomousCommand != null) {
+    //   return;
+    // }
     double time = m_autoTimer.get();
 
-    // 0–2 seconds: drive forward
-    if (time < 2.0) {
+    // 0–3 seconds: drive forward
+    if (time < 1.0) {
       // TankDrive forward both sides
-      m_drive.TankDrive(0.5, 0.5);
-      m_spinnyboi2.setShooterVoltage(6);
-      m_spinnyboi2.setFeederVoltage(0);
+      m_drive.TankDrive(0.5, -0.5);
+      m_spinnyboi2.setShooterVoltage(7.0);
+      m_spinnyboi2.setFeederVoltage(-4.0);
     }
 
-    // 2–4 seconds: spin up shooter (stop driving)
-    else if (time < 4.0) {
-      m_drive.TankDrive(0, 0);
-      m_spinnyboi2.setShooterVoltage(6.0);
-      m_spinnyboi2.setFeederVoltage(0);
-    }
-
-    // 4–20 seconds: feed game piece while shooter runs
+    // 3–20 seconds: feed game piece while shooter runs
     else if (time < 20.0) {
       m_drive.TankDrive(0, 0);
-      m_spinnyboi2.setShooterVoltage(6.0);
-      m_spinnyboi2.setFeederVoltage(5.0);
+      m_spinnyboi2.setShooterVoltage(9.0);
+      m_spinnyboi2.setFeederVoltage(7.0);
     }
 
     // stop everything after sequence
@@ -140,23 +135,24 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-   m_drive.TankDrive(-(m_driver.getRightY()), (m_driver.getLeftY()));
+   /*m_drive.TankDrive((-(m_driver.getRightY())*.6), ((m_driver.getLeftY())*.6));*/
+    m_drive.ArcDrive(((m_driver.getRightX())*.8), ((m_driver.getLeftY())*.8));
     
-    if (m_driver.getRawButton(5)) {
+    if (m_drivertwo.getRawButton(5)) {
       // LB
           //these have a max range of (-1 to +1)
       // m_spinnyboi2.m_feed.set(-1.0);
       // m_spinnyboi2.m_intake_shooter.set(-1.0);
 
       m_spinnyboi2.setShooterVoltage(9);
-      m_spinnyboi2.setFeederVoltage(6);
+      m_spinnyboi2.setFeederVoltage(7);
 
-    } else if (m_driver.getRawButton(1)) {
+    } else if (m_drivertwo.getRawButton(1)) {
       // A
           //these have a max range of (-1 to +1)
       // m_spinnyboi2.m_intake_shooter.set(-1.0);
 
-      m_spinnyboi2.setShooterVoltage(12);
+      m_spinnyboi2.setShooterVoltage(8);
       m_spinnyboi2.setFeederVoltage(0);
 
     } else if (m_driver.getRawButton(6)) {
@@ -165,8 +161,9 @@ public class Robot extends TimedRobot {
       // m_spinnyboi2.m_feed.set(1.0);
       //   m_spinnyboi2.m_intake_shooter.set(-1.0);
 
-      m_spinnyboi2.setShooterVoltage(6);
-      m_spinnyboi2.setFeederVoltage(-6);
+    
+      m_spinnyboi2.setShooterVoltage(8);
+      m_spinnyboi2.setFeederVoltage(-7);
 
     } 
     else {

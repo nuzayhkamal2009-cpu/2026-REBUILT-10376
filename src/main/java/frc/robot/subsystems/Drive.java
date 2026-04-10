@@ -46,8 +46,14 @@ public class Drive extends SubsystemBase {
 
 
         public void TankDrive(double leftMotorSpeed, double rightMotorSpeed) {
-         m_diffDrive.tankDrive(leftMotorSpeed, rightMotorSpeed);
-    }
+            m_diffDrive.tankDrive(leftMotorSpeed, rightMotorSpeed);
+        }
+    
+        public void ArcDrive(double moveSpeed, double turnSpeed) {
+        m_diffDrive.arcadeDrive(moveSpeed, turnSpeed);
+        }
+
+        
 
     @Override
     public void periodic() {
